@@ -1,0 +1,10 @@
+edge - face: 1.437209 in 2785130 iters; avg: 0.000001 
+edge - nodes: 0.331041 in 761896 iters; avg: 0.000000 
+edge - tet: 0.434997 in 56741 iters; avg: 0.000008 
+face - edge: 0.175580 in 455558 iters; avg: 0.000000 
+face - tete: 0.425794 in 832477 iters; avg: 0.000001 
+node - edge: 2.311838 in 5281282 iters; avg: 0.000000 
+node - face: 7.665400 in 1856816 iters; avg: 0.000004 
+node - tet: 7.703598 in 689783 iters; avg: 0.000011 
+tet - edge: 0.068442 in 6380 iters; avg: 0.000011 
+tet - face: 0.269192 in 439534 iters; avg: 0.000001 
