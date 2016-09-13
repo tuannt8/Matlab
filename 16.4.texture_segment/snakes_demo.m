@@ -13,17 +13,17 @@ test_case = 1; % chose one of 12 test cases, see with show_test_cases
 % M used here is 3, 5, 9 or 15: larger works better for textured images
 
 % dictionary settings
-nToClust = 5000; % nr random patches for building the dictionary tree
-branching_factor = 5; % branching factor for dictionary tree
+nToClust = 10000; % nr random patches for building the dictionary tree
+branching_factor = 7; % branching factor for dictionary tree
 number_layers = 4; % nr. layers in dictionary tree
     % branching_factor and number_layers relate to dictionary size
 normalize = true; % normalization makes texture invariant to global intensity changes
 
 % curve evolution settings
-nr_step = 150; % nr. evolution steps
+nr_step = 200; % nr. evolution steps
 step_size = 1; % evolution speed
 alpha = 3; % curve elasticity
-beta = 1; % curve stifness
+beta = 0.1; % curve stifness
 nr_points = 500; % number of points in a snake
 
 %% PRE-PROCESSING 
@@ -42,7 +42,7 @@ A = search_km_tree(im_double,tree,branching_factor,normalize);
 [T1,T2] = transition_matrix(biadjacency_matrix(A,patch_size));
 [r,c,l] = size(im_double);
 
-% snakes initialization
+%% snakes initialization
 S = make_circular_snake(center, radius, nr_points);
 S = keep_snake_inside(S,[r,c]);
 B = regularization_matrix(nr_points,alpha,beta);
@@ -52,6 +52,7 @@ imagesc(im), axis image, hold on, plot(S(:,2),S(:,1),'g','LineWidth',2)
 title('initialization')
 
 %% EVOLUTION, VARIANT SIMILAR TO ICPR 2014
+tic
 fig2 = figure;
 for i = 1:nr_step    
     in = poly2mask(S(:,2),S(:,1),r,c); 
@@ -75,6 +76,7 @@ for i = 1:nr_step
         plot(S([1:end,1],2),S([1:end,1],1),'g','LineWidth',2)
     title(['iter ',num2str(i),'/',num2str(nr_step)]), drawnow
 end
+toc
 figure(fig1), ax12 = subplot(122); imagesc(P-0.5,[-0.5,0.5]), colormap(blue_white_red)
 axis image, hold on, plot(S([1:end,1],2),S([1:end,1],1),'g','LineWidth',2)
 title('resulting curve and probabilities')

@@ -8,20 +8,20 @@ addpath texture_functions level_set_functions auxiliary_functions
 
 %% SETTINGS
 % loading image and initialization settings
-test_case = 2; % chose one of 12 test cases, see with show_test_cases
+test_case = 3; % chose one of 12 test cases, see with show_test_cases
 [input_image,center,radius,patch_size] = load_test_case(test_case);
 % M used here is 3, 5, 9 or 15: larger works better for textured images
 
 % dictionary settings
-nToClust = 5000; % nr random patches for building the dictionary tree
-branching_factor = 5; % branching factor for dictionary tree
+nToClust = 50000; % nr random patches for building the dictionary tree
+branching_factor = 7; % branching factor for dictionary tree
 number_layers = 4; % nr. layers in dictionary tree
     % branching_factor and number_layers relate to dictionary size
 normalize = true; % normalization makes texture invariant to global intensity changes
 
 % curve evolution settings
-sigma = 1; % sigma for regularization using gaussian smoothing
-nr_step = 100; % nr. evolution steps 
+sigma = 3.5; % sigma for regularization using gaussian smoothing
+nr_step = 80; % nr. evolution steps 
 w = 20; % evolution speed
 a = 0.05; % division factor for scaling phi
 
@@ -41,6 +41,7 @@ A = search_km_tree(im_double,tree,branching_factor,normalize);
 [T1,T2] = transition_matrix(biadjacency_matrix(A,patch_size));
 [r,c,l] = size(im_double);
 
+%%
 % level set initialization
 mask = initial_mask([r,c],radius,center);
 phi = mask2sdf(mask);
@@ -63,8 +64,17 @@ for i = 1:nr_step
     % phi = 50*phi/max(abs(phi(:))); % alternative to division
     % cla, show_phi(phi) % alternative visualization
     cla, show_contour(im,phi)
-    title(['iter ',num2str(i),'/',num2str(nr_step)]), drawnow
+    title(['iter ',num2str(i),'/',num2str(nr_step)]), axis off, drawnow
 end
 figure(fig1), ax12 = subplot(122);
 show_phi(phi), title('resulting curve and phi')
 linkaxes([ax11;ax12])
+
+%%
+h = figure;
+show_contour(im,phi);
+set(gca,'LooseInset',get(gca,'TightInset'));
+axis image;
+axis off;
+
+saveas(h, 'image.png');
