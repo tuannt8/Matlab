@@ -1,56 +1,63 @@
+I = imread('test1.JPG');
+I = imresize(I, 0.08);
+I = I(:,:,1);
+
+%%
 close all;
+[~, threshold] = edge(I, 'sobel');
+fudgeFactor = 0.7;
+BWs = edge(I,'sobel', threshold * fudgeFactor);
+figure, image(~BWs*256), title('binary gradient mask');
 
-l = 0.3;
-x = [0.5 0.2; 0.2 0.5];
-v = [1 0; 0 1];
+ss = size(BWs);
+set(gca,'xtick',[0:1:ss(1)]);
+set(gca,'ytick',[0:1:ss(2)]);
+grid on;
+colormap gray
+% %%
+% close all;
+% fun = @(block_struct) ...
+%    std2(block_struct.data) * ones(size(block_struct.data));
+% I2 = blockproc(I,[32 32],fun);
+% figure;
+% imshow(I);
+% figure;
+% 
+% % I2 = imresize(I2, 0.1);
+% imshow(I2,[]);
 
-dt = 0.01;
-
+%%
+close all;
+I = imread('mun.png');
 figure;
-while 1
+image(I); colormap gray; axis image;
+ss = size(I);
+set(gca,'xtick',0:10:ss(2));
+set(gca,'ytick',0:10:ss(1));
+grid on;
+grid minor;
 
-    f = [0 -0.5; 0 -0.5];
-    if(norm(x(1,:) - x(2,:)) < l)
-        d = x(1,:) - x(2,:);
-        f(1,:) = f(1,:) + d.*((l-norm(d))/norm(d)*40);
-        f(2,:) = f(2,:) - d.*((l-norm(d))/norm(d)*40);
-    end
-    a = f;
-    v = v + a*dt;
-%     v = v - v*0.01;
-    x = x + v*dt;
-
-    for i = 1:2
-        if x(i,1) < 0
-            x(i,1) = 0;
-            v(i,1) = -v(i,1);
-        end
-        if x(i,1) > 1
-            x(i,1) = 1;
-            v(i,1) = -v(i,1);
-        end
-        if x(i,2) < 0
-            x(i,2) = 0;
-            v(i,2) = -v(i,2);
-        end
-        if x(i,2) > 1
-            x(i,2) = 1;
-            v(i,2) = -v(i,2);
-        end        
-    end
-clf;
-pos = [0 0 1 1];
-rectangle('Position',pos, 'LineWidth', 2);
-
-pos = [x(1,1)-0.05 x(1,2)-0.05 0.1 0.1];
-rectangle('Position',pos,'Curvature',[1 1], 'LineWidth', 2);
-
-pos = [x(2,1)-0.05 x(2,2)-0.05 0.1 0.1];
-rectangle('Position',pos,'Curvature',[1 1], 'LineWidth', 2);
-
-xlim([-1 2]);
-ylim([-1 2]);
-
-
-pause(0.01);
+xlabel = cell(ss(2),1);
+for i = 1:ss(2)
+    xlabel(i) = {num2str(i*0.4)};
 end
+ylabel = cell(ss(1),1);
+for i = 1:ss(1)
+    ylabel(i) = {num2str(i*0.4)};
+end
+set(gca,'xticklabel',cellstr(xlabel));
+set(gca,'yticklabel',cellstr(ylabel));
+
+% grid minor;
+% hold;
+% i = 1;
+% while i < ss(1)
+%     plot([0,ss(2)], [i i], 'b');
+%     i = i+10;
+% end
+% 
+% i = 1;
+% while i < ss(2)
+%     plot([i i ], [0,ss(1)], 'b');
+%     i = i+10;
+% end
